@@ -4,10 +4,6 @@
 # # Handwritten Digit Recognition Project using CNN and ML Algorithms
 
 # ## 📥 1. Import Libraries
-
-# In[23]:
-
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -28,40 +24,17 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-# In[ ]:
-
-
-
-
-
 # ## 📂 2. Load and Preprocess the Data
-
-# In[24]:
-
-
 train = pd.read_csv('train.csv')
 test = pd.read_csv('test.csv')
-
-
-# In[25]:
-
 
 X = train.drop(columns=['label'])
 y = train['label']
 
-
-# In[26]:
-
-
 X = X / 255.0
 test = test / 255.0
 
-
 # ## 📊 3. Visualize Some Sample Images
-
-# In[27]:
-
-
 plt.figure(figsize=(6, 6))
 for i in range(36):
     plt.subplot(6, 6, i + 1)
@@ -72,10 +45,6 @@ for i in range(36):
 plt.tight_layout()
 plt.show()
 
-
-# In[28]:
-
-
 X = train.drop(columns=['label']).values.reshape(-1, 28, 28, 1)
 y = train['label'].values
 X = X / 255.0
@@ -83,20 +52,10 @@ X = X / 255.0
 test = test.values.reshape(-1, 28, 28, 1)
 test = test / 255.0
 
-
 # ## 🎯4. Train-Test Split
-
-# In[29]:
-
-
 X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
-
 # ## 🔁 5. Data Augmentation
-
-# In[30]:
-
-
 gen = ImageDataGenerator(rotation_range=10,
                          zoom_range=0.1,
                          width_shift_range=0.1,
@@ -104,10 +63,6 @@ gen = ImageDataGenerator(rotation_range=10,
 
 
 # ## 🧠 6. CNN Model Definition
-
-# In[31]:
-
-
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten
 
 def create_model():
@@ -133,10 +88,6 @@ def create_model():
 
 
 # ## 🚅 7. Model Training with Callbacks
-
-# In[32]:
-
-
 gen = ImageDataGenerator(rotation_range=10,
                          zoom_range=0.1,
                          width_shift_range=0.1,
@@ -154,10 +105,6 @@ history = model.fit(gen.flow(X_train, y_train, batch_size=128),
 
 
 # ## 📈 8. Training and Validation Graphs
-
-# In[33]:
-
-
 plt.figure(figsize=(12, 4))
 plt.subplot(1, 2, 1)
 plt.plot(history.history['accuracy'], label='Train Accuracy')
@@ -179,10 +126,6 @@ plt.show()
 
 
 # ## 📊 9. Confusion Matrix
-
-# In[34]:
-
-
 y_pred = model.predict(X_val).argmax(axis=1)
 cm = confusion_matrix(y_val, y_pred)
 sns.heatmap(cm, annot=True, fmt='d', cmap='Blues')
@@ -192,12 +135,7 @@ plt.ylabel('Actual')
 plt.show()
 
 
-# 
 # ## ❌ 10. Visualize Misclassified Images
-
-# In[45]:
-
-
 misclassified = np.where(y_pred != y_val)[0]
 plt.figure(figsize=(12, 6))
 for i, idx in enumerate(misclassified[:10]):
@@ -209,33 +147,14 @@ plt.suptitle('Misclassified Examples')
 plt.tight_layout()
 plt.show()
 
-
-# 
 # ## 🧪 11. Classical Models (SVM & RF)
-
-# In[46]:
-
-
-# Fix here
 X_flat = X.reshape(-1, 28*28)
 X_train_f, X_val_f, y_train_f, y_val_f = train_test_split(X_flat, y, test_size=0.2, random_state=42)
 
-
-# In[47]:
-
-
 scaler=StandardScaler()
-
-
-# In[48]:
-
 
 X_train_f = scaler.fit_transform(X_train_f)
 X_val_f = scaler.transform(X_val_f)
-
-
-# In[49]:
-
 
 # SVM
 svm_model = SVC()
@@ -251,10 +170,6 @@ print("Random Forest Accuracy:", accuracy_score(y_val_f, rf_preds))
 
 
 # ## 🧬 12. Ensemble Voting (CNN + SVM + RF)
-
-# In[50]:
-
-
 cnn_preds = model.predict(X_val).argmax(axis=1)
 ensemble_preds = []
 
@@ -274,9 +189,3 @@ print("Ensemble Accuracy:", accuracy_score(y_val_f, ensemble_preds))
 # ### demonstrating the robustness and effectiveness of combining diverse machine learning algorithms.
 # ### The successful integration of deep learning and traditional machine learning models highlights the power of ensemble 
 # ### techniques in enhancing predictive performance, making this approach suitable for complex classification tasks.
-
-# In[ ]:
-
-
-
-
